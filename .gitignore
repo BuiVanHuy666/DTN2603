@@ -1,0 +1,61 @@
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# =========================
+# IntelliJ IDEA / DataGrip
+# =========================
+.idea/
+*.iml
+out/
+
+# =========================
+# Java
+# =========================
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Logs
+*.log
+
+# =========================
+# Environment
+# =========================
+.env
+.env.*
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# =========================
+# VS Code (nếu có dùng)
+# =========================
+.vscode/
+
+# =========================
+# Database local files (nếu có)
+# =========================
+*.db
+*.sqlite
+*.sqlite3
