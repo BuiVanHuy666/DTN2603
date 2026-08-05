@@ -1,5 +1,6 @@
 # Tạo DB Testing System.
 CREATE DATABASE IF NOT EXISTS testing_system;
+
 USE testing_system;
 
 # Table 1:Department
