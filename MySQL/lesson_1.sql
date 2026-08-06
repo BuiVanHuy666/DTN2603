@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `account`
     CONSTRAINT fk_account_department FOREIGN KEY (department_id) REFERENCES `department` (id),
     CONSTRAINT fk_account_position FOREIGN KEY (position_id) REFERENCES `position` (id)
 );
+
 # Table 4: Group
 CREATE TABLE IF NOT EXISTS `group`
 (
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `group`
     create_date DATETIME,
 
     creator_id  BIGINT UNSIGNED,
-    CONSTRAINT fk_group_creator FOREIGN KEY (creator_id) REFERENCES account (id)
+    CONSTRAINT fk_group_creator FOREIGN KEY (creator_id) REFERENCES `account` (id)
 );
 
 # Table 5: GroupAccount
