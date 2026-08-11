@@ -1,6 +1,6 @@
 -- Question 1: Tạo store để người dùng nhập vào tên phòng ban và in ra tất cả các account thuộc phòng ban đó.
 DELIMITER $$
-CREATE PROCEDURE GetAccountsByDepartmentName(IN p_dep_name VARCHAR(256))
+CREATE PROCEDURE IF NOT EXISTS GetAccountsByDepartmentName(IN p_dep_name VARCHAR(256))
 BEGIN
     SELECT a.*
     FROM `account` a
@@ -13,7 +13,7 @@ CALL GetAccountsByDepartmentName('sale');
 
 -- Question 2: Tạo store để in ra số lượng account trong mỗi group.
 DELIMITER $$
-CREATE PROCEDURE CountAccountInGroup()
+CREATE PROCEDURE IF NOT EXISTS CountAccountInGroup()
 BEGIN
     SELECT g.name, COUNT(ga.account_id) AS account_count
     FROM `group` g
@@ -26,7 +26,7 @@ CALL CountAccountInGroup();
 
 -- Question 3: Tạo store để thống kê mỗi type question có bao nhiêu question được tạo trong tháng hiện tại.
 DELIMITER $$
-CREATE PROCEDURE CountTypeQuestionThisMonth()
+CREATE PROCEDURE IF NOT EXISTS CountTypeQuestionThisMonth()
 BEGIN
     SELECT tq.name, COUNT(q.id) AS question_count
     FROM type_question tq
@@ -41,7 +41,7 @@ CALL CountTypeQuestionThisMonth();
 
 -- Question 4: Tạo store để trả ra id của type question có nhiều câu hỏi nhất.
 DELIMITER $$
-CREATE PROCEDURE GetMostPopularTypeQuestionId(OUT v_type_ids VARCHAR(255))
+CREATE PROCEDURE IF NOT EXISTS GetMostPopularTypeQuestionId(OUT v_type_ids VARCHAR(255))
 BEGIN
     SELECT GROUP_CONCAT(type_id) INTO v_type_ids
     FROM (
@@ -65,7 +65,7 @@ SELECT @v_type_ids AS 'Kết quả Test';
 
 -- Question 5: Sử dụng store ở question 4 để tìm ra tên của type question.
 DELIMITER $$
-CREATE PROCEDURE GetMostPopularTypeQuestionName()
+CREATE PROCEDURE IF NOT EXISTS GetMostPopularTypeQuestionName()
 BEGIN
     DECLARE v_ids VARCHAR(255);
     CALL GetMostPopularTypeQuestionId(v_ids);
@@ -80,7 +80,7 @@ CALL GetMostPopularTypeQuestionName();
 
 -- Question 6: Viết 1 store cho phép người dùng nhập vào 1 chuỗi và trả về group có tên chứa chuỗi của người dùng nhập vào hoặc trả về user có username chứa chuỗi của người dùng nhập vào.
 DELIMITER $$
-CREATE PROCEDURE SearchGroupOrUser(IN p_search_string VARCHAR(256))
+CREATE PROCEDURE IF NOT EXISTS SearchGroupOrUser(IN p_search_string VARCHAR(256))
 BEGIN
     SELECT 'Group' AS type, name AS result_name
     FROM `group`
@@ -101,7 +101,7 @@ CALL SearchGroupOrUser('user');
     # positionID: sẽ có default là developer
     # departmentID: sẽ được cho vào 1 phòng chờ Sau đó in ra kết quả tạo thành công
 DELIMITER $$
-CREATE PROCEDURE AutoCreateAccount(IN p_fullname VARCHAR(256), IN p_email VARCHAR(256))
+CREATE PROCEDURE IF NOT EXISTS AutoCreateAccount(IN p_fullname VARCHAR(256), IN p_email VARCHAR(256))
 BEGIN
     DECLARE v_username VARCHAR(256);
     DECLARE v_position_id BIGINT;
@@ -110,9 +110,7 @@ BEGIN
     -- Xử lý chuỗi: Lấy phần chữ trước dấu @ làm username
     SET v_username = SUBSTRING_INDEX(p_email, '@', 1);
 
-    -- Lấy ID mặc định
     SELECT id INTO v_position_id FROM position WHERE name = 'DEV' LIMIT 1;
-    -- Giả sử trong bảng department đã có dòng 'Phòng chờ'
     SELECT id INTO v_department_id FROM department WHERE name = 'TEMP_DEPT' LIMIT 1;
 
     INSERT INTO `account` (email, username, fullname, create_date, department_id, position_id)
@@ -126,7 +124,7 @@ CALL AutoCreateAccount('Nguyen Van A', 'nguyenvana@gmail.com');
 
 -- Question 8: Viết 1 store cho phép người dùng nhập vào Essay hoặc Multiple-Choice để thống kê câu hỏi essay hoặc multiple-choice nào có content dài nhất
 DELIMITER $$
-CREATE PROCEDURE GetLongestQuestionByType(IN p_type_name ENUM('ESSAY', 'MULTIPLE_CHOICE'))
+CREATE PROCEDURE IF NOT EXISTS GetLongestQuestionByType(IN p_type_name ENUM('ESSAY', 'MULTIPLE_CHOICE'))
 BEGIN
     SELECT q.*
     FROM question q
@@ -146,7 +144,7 @@ CALL GetLongestQuestionByType('MULTIPLE_CHOICE');
 
 -- Question 9: Viết 1 store cho phép người dùng xóa exam dựa vào ID
 DELIMITER $$
-CREATE PROCEDURE DeleteExamById(IN p_exam_id BIGINT)
+CREATE PROCEDURE IF NOT EXISTS DeleteExamById(IN p_exam_id BIGINT)
 BEGIN
     DELETE FROM exam_question WHERE exam_id = p_exam_id;
     DELETE FROM exam WHERE id = p_exam_id;
@@ -158,7 +156,7 @@ CALL DeleteExamById(1);
 -- Question 10: Tìm ra các exam được tạo từ 3 năm trước và xóa các exam đó đi (sử dụng store ở câu 9 để xóa) Sau đó in số lượng record đã remove từ các table liên quan trong khi removing
 
 DELIMITER $$
-CREATE PROCEDURE DeleteOldExamsAndReport()
+CREATE PROCEDURE IF NOT EXISTS DeleteOldExamsAndReport()
 BEGIN
     DECLARE v_exam_id BIGINT;
     DECLARE v_done INT DEFAULT FALSE;
@@ -197,7 +195,7 @@ CALL DeleteOldExamsAndReport();
 
 -- Question 11: Viết store cho phép người dùng xóa phòng ban bằng cách người dùng nhập vào tên phòng ban và các account thuộc phòng ban đó sẽ được chuyển về phòng ban default là phòng ban chờ việc
 DELIMITER $$
-CREATE PROCEDURE DeleteDepartmentSafe(IN p_dep_name VARCHAR(256))
+CREATE PROCEDURE IF NOT EXISTS DeleteDepartmentSafe(IN p_dep_name VARCHAR(256))
 BEGIN
     DECLARE v_dep_id BIGINT;
     DECLARE v_waiting_room_id BIGINT;
@@ -222,7 +220,7 @@ DELIMITER ;
 
 -- Question 12: Viết store để in ra mỗi tháng có bao nhiêu câu hỏi được tạo trong năm nay
 DELIMITER $$
-CREATE PROCEDURE StatQuestionsPerMonthThisYear()
+CREATE PROCEDURE IF NOT EXISTS StatQuestionsPerMonthThisYear()
 BEGIN
     WITH RECURSIVE months AS (
         SELECT 1 AS month_num
@@ -242,7 +240,7 @@ DELIMITER ;
 
 -- Question 13: Viết store để in ra mỗi tháng có bao nhiêu câu hỏi được tạo trong 6 tháng gần đây nhất (Nếu tháng nào không có thì sẽ in ra là "không có câu hỏi nào trong tháng")
 DELIMITER $$
-CREATE PROCEDURE StatQuestionsLast6Months()
+CREATE PROCEDURE IF NOT EXISTS StatQuestionsLast6Months()
 BEGIN
     WITH RECURSIVE last_6_months AS (
         SELECT 0 AS n
