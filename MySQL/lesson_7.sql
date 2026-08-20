@@ -245,8 +245,6 @@ FROM exam;
 --     Nếu số lượng user trong group =< 5 thì sẽ có giá trị là few
 --     Nếu số lượng user trong group <= 20 và > 5 thì sẽ có giá trị là normal
 --     Nếu số lượng user trong group > 20 thì sẽ có giá trị là higher
---     Question 14: Thống kê số mỗi phòng ban có bao nhiêu user, nếu phòng ban nào
---     không có user thì sẽ thay đổi giá trị 0 thành "Không có User"
 SELECT g.name AS group_name, COUNT(ga.account_id) AS total_users,
     CASE
         WHEN COUNT(ga.account_id) <= 5 THEN 'few'
@@ -257,3 +255,11 @@ FROM `group` g
 LEFT JOIN group_account ga ON g.id = ga.group_id
 GROUP BY g.id, g.name;
 
+-- Question 14: Thống kê số mỗi phòng ban có bao nhiêu user, nếu phòng ban nào không có user thì sẽ thay đổi giá trị 0 thành "Không có User"
+SELECT
+    d.id AS department_id,
+    d.name AS department_name,
+    IF(COUNT(a.id) = 0, 'Không có User', COUNT(a.id)) AS total_users
+FROM department d
+LEFT JOIN `account` a ON d.id = a.department_id
+GROUP BY d.id, d.name;
