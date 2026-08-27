@@ -115,7 +115,7 @@ public class Exercise5 {
         System.out.println("Tạo Department mới.");
         System.out.print("Nhập tên phòng ban: ");
         String depName = scanner.nextLine();
-        Department dep = new Department(0, depName);
+        Department dep = new Department(0, depName, "");
         System.out.println("Đã tạo Department: " + dep.getName());
     }
 

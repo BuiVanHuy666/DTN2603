@@ -9,9 +9,11 @@ public class DataSeeder {
 
     public static Department[] seedDepartments() {
         return new Department[] {
-                new Department(1, "Sale"),
-                new Department(2, "Marketing"),
-                new Department(3, "IT")
+                new Department(1, "Sales", "Tầng 1"),
+                new Department(2, "Marketing", "Tầng 2"),
+                new Department(3, "IT", "Tầng 3"),
+                new Department(4, "HR", "Tầng 4"),
+                new Department(5, "Finance", "Tầng 5")
         };
     }
 

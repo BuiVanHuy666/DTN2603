@@ -23,6 +23,11 @@ public class Account {
 
     public Account() {}
 
+    @Override
+    public String toString() {
+        return "Account [Email: " + email + ", Username: " + username +
+                ", FullName: " + fullName + ", CreateDate: " + createdAt + "]";
+    }
 
     public int getId() {
         return id;
