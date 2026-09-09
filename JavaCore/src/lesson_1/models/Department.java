@@ -1,40 +1,29 @@
 package lesson_1.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 
 public class Department implements Comparable<Department> {
+    @Getter @Setter
     private int id;
+
+    @Getter @Setter
     private String name;
+
+    @Getter @Setter
     private String address;
+
+    public Department(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Department(int id, String name, String address) {
         this.id = id;
         this.name = name;
         this.address = address;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     // Question 1 & 2: Ghi đè toString()

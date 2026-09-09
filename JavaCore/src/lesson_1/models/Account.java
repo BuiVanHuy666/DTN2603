@@ -1,14 +1,30 @@
 package lesson_1.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 public class Account {
+    @Getter @Setter
     private int id;
+
+    @Getter @Setter
     private String email;
+
+    @Getter @Setter
     private String username;
+
+    @Getter @Setter
     private String fullName;
+
+    @Getter @Setter
     private Department department;
+
+    @Getter @Setter
     private Position position;
+
+    @Getter @Setter
     private Date createdAt;
 
     public Account(int id, String email, String username, String fullName, Department department, Position position, Date createdAt) {
@@ -27,62 +43,6 @@ public class Account {
     public String toString() {
         return "Account [Email: " + email + ", Username: " + username +
                 ", FullName: " + fullName + ", CreateDate: " + createdAt + "]";
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 
 }
