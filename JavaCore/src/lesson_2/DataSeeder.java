@@ -1,6 +1,7 @@
 package lesson_2;
 
 import lesson_1.enums.PositionName;
+import lesson_1.enums.Gender;
 import lesson_1.models.*;
 
 import java.util.Date;
@@ -28,9 +29,9 @@ public class DataSeeder {
 
     public static Account[] seedAccounts(Department[] departments, Position[] positions) {
         return new Account[] {
-                new Account(1, "NguyenVanA@gmail.com", "nguyenvana", "Nguyễn Văn A", departments[0], positions[0], new Date()),
-                new Account(2, "NguyenVanB@gmail.com", "nguyenvanb", "Nguyễn Văn B", null, positions[1], new Date()),
-                new Account(3, "NguyenVanC@gmail.com", "nguyenvanc", "Nguyễn Văn C", departments[2], positions[3], new Date())
+                new Account(1, "NguyenVanA@gmail.com", "nguyenvana", "Nguyễn Văn A", Gender.MALE, departments[0], positions[0], new Date()),
+                new Account(2, "NguyenVanB@gmail.com", "nguyenvanb", "Nguyễn Văn B", null, departments[1], positions[1], new Date()),
+                new Account(3, "NguyenVanC@gmail.com", "nguyenvanc", "Nguyễn Văn C", null, departments[2], positions[3], new Date())
         };
     }
 

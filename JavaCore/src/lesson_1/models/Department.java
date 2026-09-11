@@ -2,10 +2,14 @@ package lesson_1.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import utils.DB;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Department implements Comparable<Department> {
+public class Department extends Model implements Comparable<Department> {
     @Getter @Setter
     private int id;
 
@@ -29,7 +33,7 @@ public class Department implements Comparable<Department> {
     // Question 1 & 2: Ghi đè toString()
     @Override
     public String toString() {
-        return "Department{" +
+        return "Department {" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
@@ -51,5 +55,40 @@ public class Department implements Comparable<Department> {
         }
 
         return this.name.compareToIgnoreCase(other.name);
+    }
+
+    public static List<Department> all() {
+        List<Department> departments = new ArrayList<>();
+        String sql = "SELECT * FROM department";
+
+        try (ResultSet result = DB.getInstance().executeQuery(sql)) {
+            if (result != null) {
+                while (result.next()) {
+                    departments.add(new Department(
+                            result.getInt("id"),
+                            result.getString("name")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi khi lấy danh sách Department: " + e.getMessage());
+        }
+
+        return departments;
+    }
+
+    public static Department find(int id) {
+        String sql = "SELECT * FROM department WHERE id = " + id;
+        try (ResultSet result = DB.getInstance().executeQuery(sql)) {
+            if (result != null && result.next()) {
+                return new Department(
+                        result.getInt("id"),
+                        result.getString("name")
+                );
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tìm Department: " + e.getMessage());
+        }
+        return null;
     }
 }

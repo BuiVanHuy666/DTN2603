@@ -98,7 +98,7 @@ public class Exercise5 {
 
         Position position = new Position(posInput, posName);
 
-        Account newAccount = new Account(id, email, username, fullName, null, position, new Date());
+        Account newAccount = new Account(id, email, username, fullName, null, null, position, new Date());
 
         System.out.println("\n🎉 Tạo Account thành công!");
         System.out.println("Thông tin Account vừa tạo:");
