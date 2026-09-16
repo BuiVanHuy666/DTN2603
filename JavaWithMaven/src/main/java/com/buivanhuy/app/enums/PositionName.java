@@ -1,4 +1,4 @@
-package com.buivanhuy.enums;
+package com.buivanhuy.app.enums;
 
 public enum PositionName {
     DEV,

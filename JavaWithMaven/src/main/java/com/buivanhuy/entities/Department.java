@@ -11,5 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Department extends BaseEntity {
+    private int id;
     private String name;
 }

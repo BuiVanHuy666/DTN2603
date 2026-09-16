@@ -1,11 +1,11 @@
-package com.buivanhuy.services;
+package com.buivanhuy.app.controllers;
 
+import com.buivanhuy.app.enums.Gender;
+import com.buivanhuy.app.enums.PositionName;
+import com.buivanhuy.app.services.Manageable;
 import com.buivanhuy.entities.Account;
 import com.buivanhuy.entities.Department;
 import com.buivanhuy.entities.Position;
-import com.buivanhuy.enums.Gender;
-import com.buivanhuy.repositories.AccountRepositoryImpl;
-import com.buivanhuy.repositories.ResourceRepository;
 import com.buivanhuy.utils.helper.TablePrinter;
 
 import java.text.SimpleDateFormat;
@@ -13,80 +13,97 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-public class AccountServiceImpl implements Manageable {
-    private final ResourceRepository<Account> accountRepo = new AccountRepositoryImpl();
+public class AccountController {
     private final Scanner scanner = new Scanner(System.in);
+    private final Manageable<Account> accountService;
+    private final Manageable<Department> departmentService;
+    private final Manageable<Position> positionService;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final DepartmentService departmentService = new DepartmentService();
-    private final PositionService positionService = new PositionService();
 
-    @Override
+    public AccountController(
+            Manageable<Account> accountService,
+            Manageable<Department> departmentService,
+            Manageable<Position> positionService
+    ) {
+        this.accountService = accountService;
+        this.departmentService = departmentService;
+        this.positionService = positionService;
+    }
+
     public void index() {
-        List<Account> accounts = accountRepo.findAll();
+        List<Account> accounts = accountService.index();
+
         TablePrinter table = new TablePrinter(
-                "ID", "Họ và tên", "Username", "Email", "Giới tính", "Department ID", "Position ID", "Ngày tạo"
+                "ID", "Họ và tên", "Username", "Email", "Giới tính", "Phòng ban", "Chức vụ", "Ngày tạo"
         );
 
         for (Account acc : accounts) {
+            String deptName = (acc.getDepartment() != null && acc.getDepartment().getName() != null)
+                    ? acc.getDepartment().getName()
+                    : "NULL";
+
+            String posName = (acc.getPosition() != null && acc.getPosition().getName() != null)
+                    ? String.valueOf(acc.getPosition().getName())
+                    : "NULL";
+
             table.addRow(
                     String.valueOf(acc.getId()),
                     acc.getFullName() != null ? acc.getFullName() : "",
                     acc.getUsername() != null ? acc.getUsername() : "",
                     acc.getEmail() != null ? acc.getEmail() : "",
                     acc.getGender() != null ? acc.getGender().name() : "NULL",
-                    (acc.getDepartment() != null)
-                            ? departmentService.getDepartmentNameById(acc.getDepartment().getId())
-                            : "NULL",
-                    (acc.getPosition() != null)
-                            ? positionService.getPositionNameById(acc.getPosition().getId())
-                            : "NULL",
+                    deptName,
+                    posName,
                     acc.getCreateDate() != null ? dateFormat.format(acc.getCreateDate()) : "NULL"
             );
         }
         table.print();
     }
 
-    @Override
-    public void show(String id) {
-        try {
-            int accountId = Integer.parseInt(id);
-            Account acc = accountRepo.findById(accountId);
-            if (acc == null) {
-                System.out.println("Không tìm thấy tài khoản với ID: " + id);
-                return;
+    public void show() {
+        int id = inputInt("Nhập ID cần xem: ");
+        Account acc = accountService.show(id);
+
+        if (acc != null) {
+            String deptName = "NULL";
+            if (acc.getDepartment() != null) {
+                Department dept = departmentService.show(acc.getDepartment().getId());
+                if (dept != null && dept.getName() != null) {
+                    deptName = dept.getName();
+                }
             }
 
+            String posName = "NULL";
+            if (acc.getPosition() != null) {
+                Position pos = positionService.show(acc.getPosition().getId());
+                if (pos != null && pos.getName() != null) {
+                    posName = String.valueOf(pos.getName());
+                }
+            }
             TablePrinter table = new TablePrinter(
                     "ID", "Họ và tên", "Username", "Email", "Giới tính", "Department ID", "Position ID", "Ngày tạo"
             );
+
             table.addRow(
                     String.valueOf(acc.getId()),
                     acc.getFullName() != null ? acc.getFullName() : "",
                     acc.getUsername() != null ? acc.getUsername() : "",
                     acc.getEmail() != null ? acc.getEmail() : "",
                     acc.getGender() != null ? acc.getGender().name() : "NULL",
-                    (acc.getDepartment() != null)
-                            ? departmentService.getDepartmentNameById(acc.getDepartment().getId())
-                            : "NULL",
-                    (acc.getPosition() != null)
-                            ? positionService.getPositionNameById(acc.getPosition().getId())
-                            : "NULL",
+                    deptName,
+                    posName,
                     acc.getCreateDate() != null ? dateFormat.format(acc.getCreateDate()) : "NULL"
             );
             table.print();
-        } catch (NumberFormatException e) {
-            System.out.println("ID nhập vào phải là số nguyên!");
+        } else {
+            System.out.println("Không tìm thấy tài khoản.");
         }
+
     }
 
-    @Override
     public void create() {
         System.out.println("\n--- THÊM MỚI TÀI KHOẢN ---");
-        store();
-    }
 
-    @Override
-    public void store() {
         System.out.print("Họ và tên: ");
         String fullName = scanner.nextLine().trim();
 
@@ -115,23 +132,15 @@ public class AccountServiceImpl implements Manageable {
         pos.setId(positionId);
         account.setPosition(pos);
 
-        Account saved = accountRepo.store(account);
-        if (saved != null) {
-            System.out.println("Thêm mới thành công! ID mới: " + saved.getId());
-        } else {
-            System.out.println("Thêm mới thất bại!");
-        }
+        boolean isStored = accountService.store(account);
+
+        System.out.println(isStored ? "Thêm mới thành công!" : "Thêm mới thất bại!");
     }
 
-    @Override
     public void edit() {
-        update();
-    }
-
-    @Override
-    public void update() {
         int id = inputInt("Nhập ID tài khoản cần sửa: ");
-        Account account = accountRepo.findById(id);
+        Account account = accountService.show(id);
+
         if (account == null) {
             System.out.println("Không tìm thấy tài khoản có ID: " + id);
             return;
@@ -168,45 +177,23 @@ public class AccountServiceImpl implements Manageable {
             p.setId(inputInt("Position ID mới: "));
             account.setPosition(p);
         }
+        boolean updated = accountService.update(account);
 
-        Account updated = accountRepo.update(account);
-        if (updated != null) {
-            System.out.println("Cập nhật thành công!");
-        } else {
-            System.out.println("Cập nhật thất bại!");
-        }
+        System.out.println(updated ? "Cập nhật thành công!" : "Cập nhật thất bại!");
     }
 
-    @Override
-    public void destroy(String id) {
+    public void destroy() {
+        int id = inputInt("Nhập ID cần xóa: ");
+
         try {
-            int accountId = Integer.parseInt(id);
-            Account account = accountRepo.findById(accountId);
-            if (account == null) {
-                System.out.println("Không tìm thấy tài khoản để xóa!");
-                return;
-            }
-
-            System.out.print("Bạn có chắc chắn muốn xóa tài khoản '" + account.getUsername() + "'? (y/n): ");
-            if ("y".equalsIgnoreCase(scanner.nextLine().trim())) {
-                boolean success = accountRepo.delete(account);
-                System.out.println(success ? "Xóa thành công!" : "Xóa thất bại!");
+            boolean isDeleted = accountService.destroy(id);
+            if (isDeleted) {
+                System.out.println("Xóa tài khoản thành công!");
             } else {
-                System.out.println("Đã hủy thao tác xóa.");
+                System.out.println("Xóa thất bại do lỗi hệ thống cơ sở dữ liệu!");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("ID không hợp lệ!");
-        }
-    }
-
-    private int inputInt(String prompt) {
-        while (true) {
-            try {
-                System.out.print(prompt);
-                return Integer.parseInt(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.println("Vui lòng nhập số nguyên hợp lệ!");
-            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -217,6 +204,17 @@ public class AccountServiceImpl implements Manageable {
                 return Gender.valueOf(scanner.nextLine().trim().toUpperCase());
             } catch (IllegalArgumentException e) {
                 System.out.println("Giá trị không hợp lệ! Vui lòng nhập lại.");
+            }
+        }
+    }
+
+    private int inputInt(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Vui lòng nhập số nguyên hợp lệ!");
             }
         }
     }

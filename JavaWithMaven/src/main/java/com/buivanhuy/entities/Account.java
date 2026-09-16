@@ -1,23 +1,20 @@
 package com.buivanhuy.entities;
 
-import com.buivanhuy.enums.Gender;
+import com.buivanhuy.app.enums.Gender;
 import com.buivanhuy.utils.database.BaseEntity;
-import com.buivanhuy.utils.database.DB;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Account extends BaseEntity {
+    private int id;
     private String fullName;
     private String username;
     private String email;
