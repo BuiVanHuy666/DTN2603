@@ -131,10 +131,12 @@ public class AccountController {
         Position pos = new Position();
         pos.setId(positionId);
         account.setPosition(pos);
-
-        boolean isStored = accountService.store(account);
-
-        System.out.println(isStored ? "Thêm mới thành công!" : "Thêm mới thất bại!");
+        try {
+            boolean isStored = accountService.store(account);
+            System.out.println(isStored ? "Thêm mới thành công!" : "Thêm mới thất bại!");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void edit() {

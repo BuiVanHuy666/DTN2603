@@ -25,7 +25,12 @@ public class Application {
         ResourceRepository<Department> departmentRepository = new DepartmentRepositoryImpl();
         ResourceRepository<Position> positionRepository = new PositionRepositoryImpl();
 
-        Manageable<Account> accountService = new AccountServiceImpl(accountRepository);
+        Manageable<Account> accountService =
+                new AccountServiceImpl(
+                        accountRepository,
+                        departmentRepository,
+                        positionRepository
+                );
         DepartmentServiceImpl departmentService = new DepartmentServiceImpl(departmentRepository);
         PositionServiceImpl positionService = new PositionServiceImpl(positionRepository);
 
