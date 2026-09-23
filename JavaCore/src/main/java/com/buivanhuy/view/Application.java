@@ -64,6 +64,7 @@ public class Application {
                 case "3" -> accountController.create();
                 case "4" -> accountController.edit();
                 case "5" -> accountController.destroy();
+                case "6" -> accountController.importFromCSV();
                 case "0" -> {
                     System.out.println("Tạm biệt! Chương trình kết thúc.");
                     return;
@@ -80,6 +81,7 @@ public class Application {
         System.out.println("3. Thêm mới tài khoản");
         System.out.println("4. Cập nhật tài khoản");
         System.out.println("5. Xóa tài khoản");
+        System.out.println("6. Nhập tài khoản từ file");
         System.out.println("0. Thoát");
         System.out.println("=================================================");
     }

@@ -199,6 +199,23 @@ public class AccountController {
         }
     }
 
+    public void importFromCSV() {
+        System.out.println("\n========== NHẬP DỮ LIỆU TỪ CSV ==========");
+        System.out.print("Vui lòng nhập đường dẫn tuyệt đối của file CSV: ");
+        String filePath = scanner.nextLine().trim();
+
+        if (filePath.isEmpty()) {
+            System.out.println("Đường dẫn file không được để trống!");
+            return;
+        }
+
+        try {
+            accountService.importFromCSV(filePath);
+        } catch (Exception e) {
+            System.out.println("Có lỗi xảy ra trong quá trình nhập dữ liệu: " + e.getMessage());
+        }
+    }
+
     private Gender inputGender() {
         while (true) {
             System.out.print("Giới tính (MALE, FEMALE, OTHER): ");

@@ -46,4 +46,11 @@ public interface Manageable<T extends BaseEntity> {
      *         {@code false} otherwise
      */
     boolean update(T entity);
+
+    /**
+     * Import accounts by CSV file
+     *
+     * @param filePath Absolute path of file to import
+     */
+    void importFromCSV(String filePath);
 }

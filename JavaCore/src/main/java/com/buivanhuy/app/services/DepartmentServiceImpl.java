@@ -31,6 +31,11 @@ public class DepartmentServiceImpl implements Manageable<Department> {
     public boolean update(Department entity) { return deptRepo.update(entity);}
 
     @Override
+    public void importFromCSV(String filePath) {
+        return;
+    }
+
+    @Override
     public boolean destroy(int id) {
         Department dept = deptRepo.findById(id);
         if (dept == null) {

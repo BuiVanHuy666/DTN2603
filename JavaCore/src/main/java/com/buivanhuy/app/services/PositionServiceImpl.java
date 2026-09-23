@@ -33,6 +33,11 @@ public class PositionServiceImpl implements Manageable<Position> {
     }
 
     @Override
+    public void importFromCSV(String filePath) {
+        return;
+    }
+
+    @Override
     public boolean destroy(int id) {
         Position pos = posRepo.findById(id);
         if (pos == null) {
