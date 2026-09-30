@@ -1,7 +1,8 @@
 package com.buivanhuy.app.controllers;
 
 import com.buivanhuy.app.enums.Gender;
-import com.buivanhuy.app.enums.PositionName;
+import com.buivanhuy.app.services.AccountService;
+import com.buivanhuy.app.services.AccountServiceImpl;
 import com.buivanhuy.app.services.Manageable;
 import com.buivanhuy.entities.Account;
 import com.buivanhuy.entities.Department;
@@ -15,13 +16,13 @@ import java.util.Scanner;
 
 public class AccountController {
     private final Scanner scanner = new Scanner(System.in);
-    private final Manageable<Account> accountService;
+    private final AccountService accountService;
     private final Manageable<Department> departmentService;
     private final Manageable<Position> positionService;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public AccountController(
-            Manageable<Account> accountService,
+            AccountService accountService,
             Manageable<Department> departmentService,
             Manageable<Position> positionService
     ) {
@@ -112,6 +113,8 @@ public class AccountController {
 
         System.out.print("Email: ");
         String email = scanner.nextLine().trim();
+        System.out.print("Password: ");
+        String password = scanner.nextLine().trim();
 
         Gender gender = inputGender();
         int departmentId = inputInt("Department ID: ");
@@ -197,6 +200,17 @@ public class AccountController {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public Account login(String username, String password) {
+        try {
+            return accountService.login(username, password);
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Đăng nhập thất bại: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ Lỗi hệ thống: " + e.getMessage());
+        }
+        return null;
     }
 
     public void importFromCSV() {

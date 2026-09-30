@@ -1,6 +1,8 @@
 package com.buivanhuy.app.services;
 
 import com.buivanhuy.app.enums.Gender;
+import com.buivanhuy.app.repositories.AccountRepository;
+import com.buivanhuy.app.repositories.AccountRepositoryImpl;
 import com.buivanhuy.app.repositories.ResourceRepository;
 import com.buivanhuy.entities.Account;
 import com.buivanhuy.entities.Department;
@@ -8,16 +10,17 @@ import com.buivanhuy.entities.Position;
 import com.buivanhuy.utils.helper.Validation;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class AccountServiceImpl implements Manageable<Account> {
-    private final ResourceRepository<Account> accountRepo;
+public class AccountServiceImpl implements AccountService {
+    private final AccountRepository accountRepo;
     private final ResourceRepository<Department> departmentRepo;
     private final ResourceRepository<Position> positionRepo;
 
     public AccountServiceImpl(
-            ResourceRepository<Account> accountRepo,
+            AccountRepository accountRepo,
             ResourceRepository<Department> departmentRepo,
             ResourceRepository<Position> positionRepo
     ) {
@@ -76,10 +79,10 @@ public class AccountServiceImpl implements Manageable<Account> {
         try (
                 BufferedReader br = new BufferedReader(new InputStreamReader(
                         new FileInputStream(filePath),
-                        java.nio.charset.StandardCharsets.UTF_8
+                        StandardCharsets.UTF_8
                 ));
                 BufferedWriter errorWriter = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(errorFilePath), java.nio.charset.StandardCharsets.UTF_8))
+                        new FileOutputStream(errorFilePath), StandardCharsets.UTF_8))
         ) {
             String line;
             boolean isFirstLine = true;
@@ -224,6 +227,24 @@ public class AccountServiceImpl implements Manageable<Account> {
         }
 
         return accountRepo.delete(account);
+    }
+
+    public Account login(String username, String password) {
+        Validation.requireNotNull(username, "Username không được để trống!");
+        Validation.requireNotNull(password, "Mật khẩu không được để trống!");
+
+        Validation.validateStringLength(username, 2, 100, "Username");
+        Validation.validateStringLength(password, 5, 50, "Mật khẩu");
+
+        if (accountRepo instanceof AccountRepositoryImpl) {
+            Account account = accountRepo.findByUsernameAndPassword(username, password);
+            if (account == null) {
+                throw new IllegalArgumentException("Tên đăng nhập hoặc mật khẩu không chính xác!");
+            }
+            return account;
+        }
+
+        throw new IllegalStateException("Repository hiện tại không hỗ trợ đăng nhập!");
     }
 
     private void validateAccount(Account account) {

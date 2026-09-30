@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountRepositoryImpl implements ResourceRepository<Account> {
+public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
@@ -172,5 +172,28 @@ public class AccountRepositoryImpl implements ResourceRepository<Account> {
         }
 
         return account;
+    }
+
+    public Account findByUsernameAndPassword(String username, String password) {
+        String sql = """
+            SELECT a.*, d.name AS dept_name, p.name AS pos_name
+            FROM account a
+            LEFT JOIN department d ON a.department_id = d.id
+            LEFT JOIN position p ON a.position_id = p.id
+            WHERE a.username = ? AND a.password = ?""";
+
+        try (PreparedStatement ps = DB.getInstance().getConnection().prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToAccount(rs);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi truy vấn đăng nhập: " + e.getMessage());
+        }
+        return null;
     }
 }
