@@ -131,16 +131,6 @@ public class AccountService {
         accountRepository.delete(account);
     }
 
-    @Transactional(readOnly = true)
-    public List<GroupMembershipResponse> getGroupsOfAccount(Long accountId) {
-        if (!accountRepository.existsById(accountId)) {
-            throw new ResourceNotFoundException();
-        }
-        return groupAccountRepository.findByAccount_Id(accountId).stream()
-                .map(GroupMembershipResponse::from)
-                .toList();
-    }
-
     private <T> void updateIfPresent(Consumer<T> setter, T value) {
         if (value != null) {
             setter.accept(value);

@@ -100,15 +100,4 @@ public class AccountController {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
-
-    /**
-     * {@code GET  /account/:id/groups} : get the groups of the "id" account.
-     *
-     * @param id the id of the account to get groups.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the groups of the account in the body.
-     */
-    @GetMapping("/{id}/groups")
-    public List<GroupMembershipResponse> getGroupsAccount(@PathVariable Long id) {
-        return accountService.getGroupsOfAccount(id);
-    }
 }
