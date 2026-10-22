@@ -1,19 +1,21 @@
 package com.buivanhuy.accountcrud.services.impl;
 
-import com.buivanhuy.accountcrud.dto.AccountCreateRequest;
-import com.buivanhuy.accountcrud.dto.AccountResponse;
-import com.buivanhuy.accountcrud.dto.AccountUpdateRequest;
-import com.buivanhuy.accountcrud.dto.GroupMembershipResponse;
+import com.buivanhuy.accountcrud.dto.*;
 import com.buivanhuy.accountcrud.entities.Account;
 import com.buivanhuy.accountcrud.entities.Department;
 import com.buivanhuy.accountcrud.entities.Group;
 import com.buivanhuy.accountcrud.entities.Position;
+import com.buivanhuy.accountcrud.enums.Gender;
 import com.buivanhuy.accountcrud.repositories.AccountRepository;
 import com.buivanhuy.accountcrud.repositories.DepartmentRepository;
 import com.buivanhuy.accountcrud.repositories.GroupAccountRepository;
 import com.buivanhuy.accountcrud.repositories.GroupRepository;
 import com.buivanhuy.accountcrud.repositories.PositionRepository;
+import com.buivanhuy.accountcrud.specifications.AccountSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,29 +34,23 @@ public class AccountService {
     private final GroupAccountRepository groupAccountRepository;
 
     @Transactional
-    public AccountResponse create(AccountCreateRequest req) {
-        if (accountRepository.existsByUsername(req.username())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username đã tồn tại");
-        }
-        if (accountRepository.existsByEmail(req.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email đã tồn tại");
-        }
-
+    public Account create(AccountDTO req) {
         Account account = new Account();
         account.setUsername(req.username());
         account.setEmail(req.email());
         account.setFullname(req.fullname());
         account.setPassword(req.password());
-        account.setGender(req.gender());
+        account.setGender(Gender.valueOf(req.gender()));
         account.setDepartment(findDepartment(req.departmentId()));
         account.setPosition(findPosition(req.positionId()));
 
-        return AccountResponse.from(accountRepository.save(account));
+        return accountRepository.save(account);
     }
 
     @Transactional(readOnly = true)
-    public List<AccountResponse> findAll() {
-        return accountRepository.findAll().stream().map(AccountResponse::from).toList();
+    public Page<Account> findAll(AccountFilterRequest filter, Pageable pageable) {
+        Specification<Account> filterSpec = AccountSpecification.filter(filter);
+        return accountRepository.findAll(filterSpec, pageable);
     }
 
     @Transactional(readOnly = true)
