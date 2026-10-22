@@ -1,4 +1,4 @@
-package com.buivanhuy.accountcrud.dto;
+package com.buivanhuy.accountcrud.dto.response;
 
 import com.buivanhuy.accountcrud.entities.Account;
 import com.buivanhuy.accountcrud.enums.Gender;

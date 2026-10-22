@@ -1,6 +1,6 @@
 package com.buivanhuy.accountcrud.specifications;
 
-import com.buivanhuy.accountcrud.dto.AccountFilterRequest;
+import com.buivanhuy.accountcrud.dto.request.AccountFilterRequest;
 import com.buivanhuy.accountcrud.entities.Account;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;

@@ -23,4 +23,14 @@ public class GlobalException {
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(responseBody);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        Map<String, Object> responseBody = Map.of(
+                "status", HttpStatus.NOT_FOUND.value(),
+                "message", ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+    }
 }
