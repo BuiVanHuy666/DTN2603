@@ -7,38 +7,40 @@ import com.buivanhuy.accountcrud.enums.Gender;
 import com.buivanhuy.accountcrud.validations.Exists;
 import com.buivanhuy.accountcrud.validations.InEnum;
 import com.buivanhuy.accountcrud.validations.Unique;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record AccountPOSTRequest(
         @NotBlank(message = "Username is required")
-        @Unique(entityClass = Account.class, fieldName = "username")
+        @Size(min = 4, max = 255, message = "Username must be between 4 and 255 characters")
+        @Unique(entityClass = Account.class, fieldName = "username", message = "Username already exists")
         String username,
 
         @NotBlank(message = "Email is required")
         @Email(message = "Email is not valid")
-        @Unique(entityClass = Account.class, fieldName = "email")
+        @Size(max = 255, message = "Email must not exceed 255 characters")
+        @Unique(entityClass = Account.class, fieldName = "email", message = "Email already exists")
         String email,
 
         @NotBlank(message = "Full name is required")
+        @Size(max = 255, message = "Full name must not exceed 255 characters")
         String fullname,
 
         @NotBlank(message = "Password is required")
-        @Size(min = 6, message = "Password must be at least 6 characters")
+        @Size(min = 6, max = 255, message = "Password must be between 6 and 255 characters")
         String password,
 
-        @NotBlank(message = "Gender is required")
-        @InEnum(enumClass = Gender.class, message = "Invalid gender")
+        @Size(max = 50, message = "Gender must not exceed 50 characters")
+        @InEnum(enumClass = Gender.class, message = "Gender is not valid")
         String gender,
 
-        @NotNull(message = "Department is required")
-        @Exists(entityClass = Department.class, message = "Department not found", fieldName = "id")
+        @Positive(message = "Department ID must be positive")
+        @NotNull(message = "Department ID is required")
+        @Exists(entityClass = Department.class, fieldName = "id", message = "Department not found")
         Long departmentId,
 
-        @NotNull(message = "Position is required")
-        @Exists(entityClass = Position.class, message = "Position not found", fieldName = "id")
+        @Positive(message = "Position ID must be positive")
+        @NotNull(message = "Position ID is required")
+        @Exists(entityClass = Position.class, fieldName = "id", message = "Position not found")
         Long positionId
 ) {
 }

@@ -1,20 +1,13 @@
 package com.buivanhuy.accountcrud.services;
 
-import com.buivanhuy.accountcrud.dto.*;
 import com.buivanhuy.accountcrud.dto.request.AccountFilterRequest;
 import com.buivanhuy.accountcrud.dto.request.AccountPOSTRequest;
-import com.buivanhuy.accountcrud.dto.response.AccountResponse;
 import com.buivanhuy.accountcrud.dto.request.AccountPUTRequest;
 import com.buivanhuy.accountcrud.entities.Account;
-import com.buivanhuy.accountcrud.entities.Department;
 import com.buivanhuy.accountcrud.entities.Group;
 import com.buivanhuy.accountcrud.enums.Gender;
 import com.buivanhuy.accountcrud.exceptions.ResourceNotFoundException;
-import com.buivanhuy.accountcrud.repositories.AccountRepository;
-import com.buivanhuy.accountcrud.repositories.DepartmentRepository;
-import com.buivanhuy.accountcrud.repositories.GroupAccountRepository;
-import com.buivanhuy.accountcrud.repositories.GroupRepository;
-import com.buivanhuy.accountcrud.repositories.PositionRepository;
+import com.buivanhuy.accountcrud.repositories.*;
 import com.buivanhuy.accountcrud.specifications.AccountSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,8 +16,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 @Service
